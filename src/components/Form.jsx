@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import {FormGroup, TextField, Grid, Button} from "@mui/material";
+import { FormGroup, TextField, Grid, Button } from "@mui/material";
+import {
+    cardNumberFormatter,
+    cardNumberValidator,
+    amountFormatter,
+    amountValidator,
+    cvvFormatter,
+    cvvValidator,
+    dateValidator,
+    expDateFormatter,
+    isFormReady
+} from "../helpers";
 import { styled } from '@mui/material/styles';
 
 const CustomForm = styled(FormGroup)`
@@ -13,75 +24,11 @@ const CustomButton = styled(Button)`
   background: #3dd5a8;
   &:hover {
     color: white;
-    
+  }
+  &:disabled {
+    background: aliceblue;
   }
 `;
-
-const cardNumberFormatter = (number) => {
-    const cardNumber = number.replace(/\D/g, '');
-    let resultValue = '';
-    for(let i = 0; i < cardNumber.length; i++) {
-        resultValue += (i%4==0 && i != 0 ? ' ' : '') + cardNumber[i];
-    }
-
-    return resultValue;
-}
-
-const expDateFormatter = (date) => {
-    const dateDigits = date.replace(/\D/g, '');
-    let resultValue = '';
-    for(let i = 0; i < dateDigits.length; i++) {
-        if (i === 2) {
-            resultValue += `/${dateDigits[i]}`
-        } else {
-            resultValue += dateDigits[i];
-        }
-    }
-
-    return resultValue;
-}
-
-const cvvFormatter = (cvv) => cvv.replace(/\d{4}/g, '');
-
-const amountFormatter = (amount) => {
-    const stringAmount = '' + amount;
-    const result = stringAmount.replace(/\D/g, '');
-
-    return +result;
-}
-
-const cardNumberValidator = (number) => {
-    const cardNumber = number.replace(/\D/g, '');
-    return cardNumber.length !== 16  ? 'Card number must contain 16 digits.' : '';
-}
-
-const dateValidator = (number) => {
-    const dateDigits = number.replace(/\D/g, '');
-    const month = dateDigits.substr(0, 2);
-    const year = dateDigits.substr(2, 4);
-    let message = '';
-
-    if (+month > 12 || +month < 1) {
-        message = 'Incorrect month number.';
-    }
-
-    if (+year < 2022) {
-        message = 'Year must be greater than 2021.';
-    }
-
-    if (+year > 2035) {
-        message = 'Year must be lower than 2035.';
-    }
-
-    if (dateDigits.length < 6) {
-        message = 'Fill date in format 12/2022.';
-    }
-
-    return message;
-}
-
-const amountValidator = (amount) => +amount === 0 ? 'Amount must be greater than 0.' : '';
-const cvvValidator = (cvv) => cvv.length !== 3 ? 'CVV must contain 3 numbers.' : '';
 
 const Form = () => {
     const [formValues, setFormValues] = useState({
@@ -114,6 +61,8 @@ const Form = () => {
         }
     });
 
+    const [isFormValid, setFormIsValid] = useState(false);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setInputsStatus({
@@ -123,7 +72,7 @@ const Form = () => {
                 isError: false,
                 isTouched: false
             }
-        })
+        });
         setFormValues({
             ...formValues,
             [name]: value
@@ -158,6 +107,8 @@ const Form = () => {
                 isTouched: true
             }
         });
+
+        setFormIsValid(isFormReady(formValues));
     }
 
     return (
@@ -214,7 +165,9 @@ const Form = () => {
                 onChange={handleInputChange}
                 onBlur={handleInputTouched}
             />
-            <CustomButton>Pay</CustomButton>
+            <CustomButton
+                disabled={!isFormValid}
+            >Pay</CustomButton>
         </CustomForm>
     );
 }

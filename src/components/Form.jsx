@@ -11,6 +11,7 @@ import {
     expDateFormatter,
     isFormReady
 } from "../helpers";
+import { sendCardData } from "../api";
 import { styled } from '@mui/material/styles';
 
 const CustomForm = styled(FormGroup)`
@@ -111,6 +112,19 @@ const Form = () => {
         setFormIsValid(isFormReady(formValues));
     }
 
+    const submitHandler = () => {
+        sendCardData(formValues).then((res) => {
+            console.log('res is', res);
+        });
+        setFormValues(({
+            CardNumber: '',
+            ExpDate: '',
+            Cvv: '',
+            Amount: 0
+        }));
+        setFormIsValid(false);
+    }
+
     return (
         <CustomForm>
             <TextField
@@ -167,6 +181,7 @@ const Form = () => {
             />
             <CustomButton
                 disabled={!isFormValid}
+                onClick={submitHandler}
             >Pay</CustomButton>
         </CustomForm>
     );

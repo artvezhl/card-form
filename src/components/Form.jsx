@@ -36,7 +36,7 @@ const CustomButton = styled(Button)`
     background-position-x: 0;
   }
   &:disabled {
-    background: aliceblue;
+    background: gainsboro;
   }
 `;
 
@@ -141,6 +141,9 @@ const Form = () => {
         error={inputsStatus.CardNumber.isError}
         helperText={inputsStatus.CardNumber.message}
         required
+        sx={{
+          boxShadow: 3
+        }}
         onChange={handleInputChange}
         onBlur={handleInputTouched}
       />
@@ -155,6 +158,9 @@ const Form = () => {
             error={inputsStatus.ExpDate.isError}
             helperText={inputsStatus.ExpDate.message}
             required
+            sx={{
+              boxShadow: 3
+            }}
             onChange={handleInputChange}
             onBlur={handleInputTouched}
           />
@@ -169,6 +175,9 @@ const Form = () => {
             error={inputsStatus.Cvv.isError}
             helperText={inputsStatus.Cvv.message}
             required
+            sx={{
+              boxShadow: 3
+            }}
             onChange={handleInputChange}
             onBlur={handleInputTouched}
           />
@@ -179,6 +188,9 @@ const Form = () => {
         label="Amount"
         variant="outlined"
         required
+        sx={{
+          boxShadow: 3
+        }}
         value={amountFormatter(formValues.Amount)}
         error={inputsStatus.Amount.isError}
         helperText={inputsStatus.Amount.message}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { FormGroup, TextField, Grid, Button } from "@mui/material";
 import {
   cardNumberFormatter,
@@ -71,8 +71,6 @@ const Form = () => {
     }
   });
 
-  const [isFormValid, setFormIsValid] = useState(false);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setInputsStatus({
@@ -88,6 +86,8 @@ const Form = () => {
       [name]: value
     });
   };
+
+  const isButtonActive = useMemo(() => isFormReady(formValues), [formValues]);
 
   const handleInputTouched = (e) => {
     const { name, value } = e.target;
@@ -117,8 +117,6 @@ const Form = () => {
         isTouched: true
       }
     });
-
-    setFormIsValid(isFormReady(formValues));
   };
 
   const submitHandler = () => {
@@ -131,7 +129,6 @@ const Form = () => {
       Cvv: "",
       Amount: 0
     });
-    setFormIsValid(false);
   };
 
   return (
@@ -188,7 +185,7 @@ const Form = () => {
         onChange={handleInputChange}
         onBlur={handleInputTouched}
       />
-      <CustomButton disabled={!isFormValid} onClick={submitHandler}>
+      <CustomButton disabled={!isButtonActive} onClick={submitHandler}>
         Pay
       </CustomButton>
     </CustomForm>
